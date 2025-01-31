@@ -174,7 +174,7 @@
                     <tbody>
                         @foreach ($bookingDetails as $booking)
                         <tr>
-                            <td>{{ $booking['id'] }}</td>
+                            <td>{{ $loop->index + 1 }}</td>
                             <td>{{ $booking['unique_id'] }}</td>
                             <td>{{ $booking['room_id'] }}</td>
                             <td>{{ $booking['capacity'] }}</td>
