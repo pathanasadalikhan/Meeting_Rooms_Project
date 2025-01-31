@@ -1,0 +1,88 @@
+.fix-h {
+    height: 70vh;
+}
+
+.fix-img {
+    width: 100%;
+    height: 100%;
+}
+
+.fix-card-img {
+    width: 100%;
+    height: 200px;
+}
+
+.view {
+    position: absolute;
+    left: -350px;
+    top: 49px;
+}
+
+/* Hide the profile box by default */
+.profile-box {
+    display: none;
+    position: absolute;
+    background: #f9f9f9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    top: 60px;
+    right: 30px;
+    z-index: 1000;
+    width: 260px;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.profile-box h5 {
+    color: #5e6b73;
+    /* A slightly muted color for the heading */
+    margin-bottom: 10px;
+}
+
+.profile-box p {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.profile-box .dropdown-item {
+    font-size: 14px;
+    padding: 10px 0;
+    border: none;
+    background: none;
+    color: #3498db;
+    text-decoration: none;
+    display: block;
+}
+
+.profile-box .dropdown-item:hover {
+    color: #1abc9c;
+    background-color: #ecf0f1;
+}
+
+.profile-box .dropdown-item.text-danger {
+    color: #e74c3c;
+}
+
+.profile-box .dropdown-item.text-danger:hover {
+    color: #c0392b;
+}
+.card-container{
+    width: 95%;
+    margin: 5px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 35px;
+}
+.card-box{
+    width: 80%;
+    margin: auto;
+}
+.card-box-body{
+    padding: 5px 10px;
+}
+.fix-card-img1 {
+    width: 100%;
+    height: 185px;
+  }
