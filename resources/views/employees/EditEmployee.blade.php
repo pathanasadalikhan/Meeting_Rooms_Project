@@ -77,7 +77,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a class="btn btn-primary" href="{{ route('employees.Home') }}">back</a>
+                <a class="btn btn-outline-primary" href="{{ route('employees.Home') }}">back</a>
 
             </form>
         </div>
