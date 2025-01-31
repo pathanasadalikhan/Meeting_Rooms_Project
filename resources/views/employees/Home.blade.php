@@ -110,17 +110,6 @@
         </div>
         <div class="card-box">
             <div class="card" style="width: 22rem;">
-                <img src="{{ asset('Employees_images/' . ('meetingrooms.jpg' ?? 'default.jpg')) }}"
-                    class="card-img-top fix-card-img" alt="...">
-                <div class="card-box-body text-center">
-                    <h5 class="card-title">All Bookings</h5>
-                    <p class="card-text">See and manage all your bookings in one place.</p>
-                    <a href="{{ route('employees.allbookings') }}" class="btn btn-outline-primary">show all</a>
-                </div>
-            </div>
-        </div>
-        <div class="card-box">
-            <div class="card" style="width: 22rem;">
                 <img src="{{ asset('Employees_images/' . ('employee_logo.png' ?? 'default.jpg')) }}"
                     class="card-img-top fix-card-img" alt="...">
                 <div class="card-box-body text-center">

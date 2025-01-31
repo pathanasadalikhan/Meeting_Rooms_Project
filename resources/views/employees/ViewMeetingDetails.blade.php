@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="my-3 text-center">
-        <a class="btn btn-primary" href="{{ route('employees.allbookings') }}">Back</a>
+        <a class="btn btn-primary" href="{{ route('employees.mybookings') }}">Back</a>
     </div>
 </div>
 @endsection

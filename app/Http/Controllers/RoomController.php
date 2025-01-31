@@ -127,24 +127,31 @@ use App\Models\BookingRooms_Table;
 
     public function mybooking() 
 {
-    $currentDate = \Carbon\Carbon::now()->toDateString();
-    $unique_id = session('employee_id');
-    $bookings = BookingRooms_Table::where('unique_id', $unique_id)
-        ->whereDate('booking_date', $currentDate)
-        ->get();
-        $roomBookingData = $this->processBookings($bookings);
+    $currentDate = \Carbon\Carbon::now();
+    $employeeUniqueId = session('employee_id');
+    // $roomBookingData = $this->processBookings($bookings);
 
-        $bookingDetails = $bookings->map(function ($booking) {
-            return [
-                'id' => $booking->id,
+        
+    if (substr($employeeUniqueId, 2, 2) === 'AD') {
+        $bookings = BookingRooms_Table::whereDate('booking_date',$currentDate->toDateString())->get();
+    } else {
+        $bookings = BookingRooms_Table::whereDate('booking_date', $currentDate->toDateString())
+            ->where('unique_id', $employeeUniqueId)
+            ->get();
+    }
+
+    $roomBookingData = $this->processBookings($bookings);
+    $bookingDetails = $bookings->map(function ($booking) {
+        return [
+            'id' => $booking->id,
             'unique_id' => $booking->unique_id,
             'room_id' => $booking->room_id,
             'capacity' => $booking->capacity,
             'booking_date' => $booking->booking_date->format('Y-m-d'),
             'start_time' => $booking->start_time->format('H:i:s'), 
             'end_time' => $booking->end_time->format('H:i:s'),
-            ];
-        });
+        ];
+    });
 
     return view('employees.BookedByYou', [
         'roomBookingData' => $roomBookingData,
@@ -161,24 +168,15 @@ public function newBooking(Request $request)
 
     $selectedDate = \Carbon\Carbon::parse($selectedDate);  
     $employeeUniqueId = session('employee_id');
-    \Log::info('Employee unique id is :' .$employeeUniqueId );
-    \Log::info('this is admin'.substr($employeeUniqueId, 2, 2));
-
-    // Get bookings based on employee role
     if (substr($employeeUniqueId, 2, 2) === 'AD') {
-        // Admin sees all bookings for the selected date
         $bookings = BookingRooms_Table::whereDate('booking_date', $selectedDate->toDateString())->get();
     } else {
-        // Non-admin sees only their bookings for the selected date
         $bookings = BookingRooms_Table::whereDate('booking_date', $selectedDate->toDateString())
             ->where('unique_id', $employeeUniqueId)
             ->get();
     }
 
-    // Process and format the bookings
     $roomBookingData = $this->processBookings($bookings);
-
-    // Return all booking details as an array along with room booking data
     $bookingDetails = $bookings->map(function ($booking) {
         return [
             'id' => $booking->id,

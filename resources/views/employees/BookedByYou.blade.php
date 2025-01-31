@@ -181,7 +181,9 @@
                             <td>{{ $booking['booking_date'] }}</td>
                             <td>{{ $booking['start_time'] }}</td>
                             <td>{{ $booking['end_time'] }}</td>
-                            <td><form action="{{ route('employees.cancelmeeting', $booking['id']) }}" method="POST"
+                            <td>
+                            <a href="{{ route('employees.view', $booking['id']) }}" class="btn btn-primary btn-sm">view</a>
+                                <form action="{{ route('employees.cancelmeeting', $booking['id']) }}" method="POST"
                                 style="display: inline;">
                                 @csrf
                                 @method('DELETE')
