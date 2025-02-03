@@ -13,7 +13,7 @@ use App\Models\BookingRooms_Table;
 
     public function showAllRooms()
     {
-        $rooms = Room::all(); // Fetch all rooms
+        $rooms = Room::all();
         return view('employees.AllRooms', compact('rooms'));
     }
 
@@ -25,7 +25,6 @@ use App\Models\BookingRooms_Table;
     }
     public function updateroom(Request $request, $id)
     {
-        // Validate the input data
         $validated = $request->validate([
             'room_name' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
@@ -38,7 +37,7 @@ use App\Models\BookingRooms_Table;
             $validated['room_image'] = time() . '_' . $request->file('room_image')->getClientOriginalName();
             $request->room_image->move(public_path('Rooms_images'), $validated['room_image']);
         } else {
-            $validated['room_image'] = $room->room_image; // Keep existing image if no new one is uploaded
+            $validated['room_image'] = $room->room_image; 
         }
 
         $room->update($validated);
@@ -54,7 +53,6 @@ use App\Models\BookingRooms_Table;
         $bookings->delete();
         $room->delete();
 
-        // Redirect with success message
         return redirect()->route('employees.showAllRooms')->with('success', 'Room and related bookings deleted successfully');
     }
 
@@ -64,7 +62,6 @@ use App\Models\BookingRooms_Table;
     }
     public function storeroom(Request $request)
     {
-        // Validate the incoming data
         $validatedData = $request->validate([
             'room_id' => 'required|string|unique:Rooms_Table|max:255',
             'room_name' => 'required|string|max:255',
@@ -89,24 +86,20 @@ use App\Models\BookingRooms_Table;
             'room_image.max' => 'The room image size may not exceed 2MB.',
         ]);
 
-        // Create a new Room instance
         $room = new Room();
         $room->room_id = $validatedData['room_id'];
         $room->room_name = $validatedData['room_name'];
         $room->capacity = $validatedData['capacity'];
 
-        // Handle room image upload if provided
         if ($request->hasFile('room_image') && $request->file('room_image')->isValid()) {
             $imageName = time() . '_' . $request->file('room_image')->getClientOriginalName();
             $request->room_image->move(public_path('Rooms_images'), $imageName);
             $room->room_image = $imageName;
         } else {
-            $room->room_image = 'defaultroom.jpg'; // Use a default image if none is provided
+            $room->room_image = 'defaultroom.jpg';
         }
-
         $room->save();
 
-        // Redirect with a success message
         return redirect()->route('employees.showAllRooms')->with('success', 'Room created successfully!');
     }
 
@@ -118,8 +111,8 @@ use App\Models\BookingRooms_Table;
         return view('employees.BookingRoom');
     }
     public function cancelmeeting($id) {
-        $booking = BookingRooms_Table::findOrFail($id); // Find the booking
-        $booking->delete(); // Delete the booking
+        $booking = BookingRooms_Table::findOrFail($id); 
+        $booking->delete(); 
         return redirect()->route('employees.mybookings')->with('success', 'Meeting canceled successfully.');
     }
     
@@ -156,7 +149,7 @@ use App\Models\BookingRooms_Table;
     return view('employees.BookedByYou', [
         'roomBookingData' => $roomBookingData,
         'currentDate' => $currentDate,
-        'bookingDetails' => $bookingDetails, // Include the full booking details
+        'bookingDetails' => $bookingDetails, 
     ]);
 }
 
@@ -192,17 +185,15 @@ public function newBooking(Request $request)
     return view('employees.BookedByYou', [
         'roomBookingData' => $roomBookingData,
         'selectedDate' => $selectedDate->toDateString(),
-        'bookingDetails' => $bookingDetails, // Include the full booking details
+        'bookingDetails' => $bookingDetails, 
     ]);
 }
 
-// Helper method to process bookings and return the formatted room data
 private function processBookings($bookings)
 {
     return $bookings->groupBy('room_id')->map(function ($roomBookings, $roomId) {
         \Log::info("Processing Room ID: {$roomId}, Bookings: ", $roomBookings->toArray());
 
-        // Sort bookings by start_time
         $sortedBookings = $roomBookings->sortBy(function ($booking) {
             try {
                 return \Carbon\Carbon::parse($booking->start_time);
@@ -214,7 +205,6 @@ private function processBookings($bookings)
 
         $processedBookings = $sortedBookings->map(function ($booking) {
             try {
-                // Format start and end times
                 $start = \Carbon\Carbon::parse($booking->start_time);
                 $end = \Carbon\Carbon::parse($booking->end_time);
 
@@ -228,7 +218,7 @@ private function processBookings($bookings)
                 \Log::error('Error processing booking: ' . $e->getMessage() . ' for booking ID: ' . $booking->id);
                 return null;
             }
-        })->filter()->toArray(); // Remove invalid bookings
+        })->filter()->toArray(); 
 
         return [
             'roomId' => $roomId,
@@ -245,13 +235,13 @@ private function processBookings($bookings)
     }
     
     public function destroy($id) {
-        $booking = BookingRooms_Table::findOrFail($id); // Find the booking
-        $booking->delete(); // Delete the booking
+        $booking = BookingRooms_Table::findOrFail($id); 
+        $booking->delete(); 
         return redirect()->route('employees.mybookings')->with('success', 'Booking canceled successfully!');
     }
     public function destroyByAdmin($id) {
-        $booking = BookingRooms_Table::findOrFail($id); // Find the booking
-        $booking->delete(); // Delete the booking
+        $booking = BookingRooms_Table::findOrFail($id); 
+        $booking->delete(); 
         return view('employees.AllBookings',['bookings'=>BookingRooms_Table::get()])->with('success', 'Booking deleted by admin');;
     }
     public function view($id)
@@ -266,16 +256,15 @@ private function processBookings($bookings)
             'employees.position',
             'employees.email as employee_email'
         )
-        ->join('Rooms_Table', 'Rooms_Table.room_id', '=', 'BookingRooms_Table.room_id') // Join with Rooms_Table
-        ->join('employees', 'employees.unique_id', '=', 'BookingRooms_Table.unique_id') // Join with employees table
-        ->where('BookingRooms_Table.id', $id) // Filter by booking ID
-        ->firstOrFail(); // Fetch the record or throw 404 if not found
+        ->join('Rooms_Table', 'Rooms_Table.room_id', '=', 'BookingRooms_Table.room_id') 
+        ->join('employees', 'employees.unique_id', '=', 'BookingRooms_Table.unique_id') 
+        ->where('BookingRooms_Table.id', $id) 
+        ->firstOrFail();
 
         return view('employees.ViewMeetingDetails', ['booking' => $booking]);
     }
 
     public function booked(Request $request){
-            // Check if the employee (unique_id) has a conflicting booking
             $existingBooking = BookingRooms_Table::where('unique_id', $request->empid)
             ->where('booking_date', $request->date)
             ->where(function ($query) use ($request) {
@@ -283,8 +272,6 @@ private function processBookings($bookings)
                     ->whereTime('end_time', '>', $request->start);
             })
             ->first();
-
-        // If a conflicting booking exists, return an error message
         if ($existingBooking) {
             return redirect()->back()->with('error', 'You already have a booking that overlaps with the selected time. Please choose a different time slot.');
         }
@@ -311,35 +298,25 @@ private function processBookings($bookings)
     ]);
 
     $empid = session('employee_id');
-    $roleCode = substr($empid, 2, 2); // Extracting the 2nd and 3rd letters from the employee_id
+    $roleCode = substr($empid, 2, 2); 
     $bookdate = $request->date;
-
-    // Initialize query builder
     $roomsQuery = DB::table('Rooms_Table');
-
-    // Determine filters based on role and employee count
     if ($roleCode === 'EM') {
-        // Employee role
         if ($request->employeescount > 5) {
             return redirect()->back()->with('error', 'Employee cannot book a meeting for more than 5 members.');
         }
 
-        // Show rooms with capacity of exactly 5
         $roomsQuery->where('capacity', '=', 5);
     } elseif ($roleCode === 'TE') {
-        // Team Lead role
         if ($request->employeescount > 10) {
             return redirect()->back()->with('error', 'Team Lead cannot book a meeting for more than 10 members.');
         }
-
-        // Show rooms with capacity of 5 or 10
         if ($request->employeescount <= 5) {
             $roomsQuery->where('capacity', '=', 5);
         } elseif ($request->employeescount <= 10 && $request->employeescount > 5 ) {
             $roomsQuery->where('capacity', '=', 10);
         }
     } elseif (in_array($roleCode, ['HR', 'AD'])) {
-        // HR or Admin roles
         if ($request->employeescount <= 5) {
             $roomsQuery->where('capacity', '=', 5);
         } elseif ($request->employeescount <= 10) {
@@ -348,15 +325,12 @@ private function processBookings($bookings)
             $roomsQuery->where('capacity', '>', 10);
         }
     } else {
-        // If role is not recognized, return an error
         return redirect()->back()->with('error', 'Unauthorized role.');
     }
 
-    // Check for overlapping bookings
     $conflictingBooking = DB::table('BookingRooms_Table')
         ->whereDate('booking_date', '=', $bookdate)
         ->where(function ($query) use ($request) {
-            // Check if the start and end time overlap
             $query->whereTime('start_time', '<', $request->end)
                 ->whereTime('end_time', '>', $request->start);
         })
